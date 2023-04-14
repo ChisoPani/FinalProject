@@ -1,5 +1,5 @@
-﻿using FinalProject.Models;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
+using FinalProject.Models;
 
 namespace FinalProject.Data
 {
@@ -10,11 +10,8 @@ namespace FinalProject.Data
         }
 
         public DbSet<TeamMember> TeamMembers { get; set; }
-
-        public DbSet<FinalProject.Models.Hobby>? Hobby { get; set; }
-
-        public DbSet<FinalProject.Models.FavTeam>? FavTeam { get; set; }
-
-        public DbSet<FinalProject.Models.FavFood>? FavFood { get; set; }
+        public DbSet<Hobby> Hobbies { get; set; }
+        public DbSet<FavTeam> FavTeams { get; set; }
+        public DbSet<FavFoods> FavFoods { get; set; }
     }
 }

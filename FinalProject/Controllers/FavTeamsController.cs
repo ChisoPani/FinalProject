@@ -23,24 +23,32 @@ namespace FinalProject.Controllers
 
         // GET: api/FavTeams
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FavTeam>>> GetFavTeam()
+        public async Task<ActionResult<IEnumerable<FavTeam>>> GetFavTeams(int? id)
         {
-          if (_context.FavTeam == null)
-          {
-              return NotFound();
-          }
-            return await _context.FavTeam.ToListAsync();
+            if (id == null || id == 0)
+            {
+                return await _context.FavTeams.Take(5).ToListAsync();
+            }
+            else
+            {
+                var favTeam = await _context.FavTeams.FindAsync(id);
+                if (favTeam == null)
+                {
+                    return NotFound();
+                }
+                return new List<FavTeam> { favTeam };
+            }
         }
 
         // GET: api/FavTeams/5
         [HttpGet("{id}")]
         public async Task<ActionResult<FavTeam>> GetFavTeam(int id)
         {
-          if (_context.FavTeam == null)
+          if (_context.FavTeams == null)
           {
               return NotFound();
           }
-            var favTeam = await _context.FavTeam.FindAsync(id);
+            var favTeam = await _context.FavTeams.FindAsync(id);
 
             if (favTeam == null)
             {
@@ -86,11 +94,11 @@ namespace FinalProject.Controllers
         [HttpPost]
         public async Task<ActionResult<FavTeam>> PostFavTeam(FavTeam favTeam)
         {
-          if (_context.FavTeam == null)
+          if (_context.FavTeams == null)
           {
               return Problem("Entity set 'AppDbContext.FavTeam'  is null.");
           }
-            _context.FavTeam.Add(favTeam);
+            _context.FavTeams.Add(favTeam);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetFavTeam", new { id = favTeam.Id }, favTeam);
@@ -100,17 +108,17 @@ namespace FinalProject.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFavTeam(int id)
         {
-            if (_context.FavTeam == null)
+            if (_context.FavTeams == null)
             {
                 return NotFound();
             }
-            var favTeam = await _context.FavTeam.FindAsync(id);
+            var favTeam = await _context.FavTeams.FindAsync(id);
             if (favTeam == null)
             {
                 return NotFound();
             }
 
-            _context.FavTeam.Remove(favTeam);
+            _context.FavTeams.Remove(favTeam);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -118,7 +126,7 @@ namespace FinalProject.Controllers
 
         private bool FavTeamExists(int id)
         {
-            return (_context.FavTeam?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.FavTeams?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

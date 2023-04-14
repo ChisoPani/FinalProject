@@ -23,24 +23,32 @@ namespace FinalProject.Controllers
 
         // GET: api/Hobbies
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Hobby>>> GetHobby()
+        public async Task<ActionResult<IEnumerable<Hobby>>> GetHobbies(int? id)
         {
-          if (_context.Hobby == null)
-          {
-              return NotFound();
-          }
-            return await _context.Hobby.ToListAsync();
+            if (id == null || id == 0)
+            {
+                return await _context.Hobbies.Take(5).ToListAsync();
+            }
+            else
+            {
+                var hobby = await _context.Hobbies.FindAsync(id);
+                if (hobby == null)
+                {
+                    return NotFound();
+                }
+                return new List<Hobby> { hobby };
+            }
         }
 
         // GET: api/Hobbies/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Hobby>> GetHobby(int id)
         {
-          if (_context.Hobby == null)
+          if (_context.Hobbies == null)
           {
               return NotFound();
           }
-            var hobby = await _context.Hobby.FindAsync(id);
+            var hobby = await _context.Hobbies.FindAsync(id);
 
             if (hobby == null)
             {
@@ -86,11 +94,11 @@ namespace FinalProject.Controllers
         [HttpPost]
         public async Task<ActionResult<Hobby>> PostHobby(Hobby hobby)
         {
-          if (_context.Hobby == null)
+          if (_context.Hobbies == null)
           {
               return Problem("Entity set 'AppDbContext.Hobby'  is null.");
           }
-            _context.Hobby.Add(hobby);
+            _context.Hobbies.Add(hobby);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetHobby", new { id = hobby.Id }, hobby);
@@ -100,17 +108,17 @@ namespace FinalProject.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteHobby(int id)
         {
-            if (_context.Hobby == null)
+            if (_context.Hobbies == null)
             {
                 return NotFound();
             }
-            var hobby = await _context.Hobby.FindAsync(id);
+            var hobby = await _context.Hobbies.FindAsync(id);
             if (hobby == null)
             {
                 return NotFound();
             }
 
-            _context.Hobby.Remove(hobby);
+            _context.Hobbies.Remove(hobby);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -118,7 +126,7 @@ namespace FinalProject.Controllers
 
         private bool HobbyExists(int id)
         {
-            return (_context.Hobby?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.Hobbies?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

@@ -23,44 +23,45 @@ namespace FinalProject.Controllers
 
         // GET: api/FavFoods
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<FavFood>>> GetFavFood()
+        public async Task<ActionResult<IEnumerable<FavFoods>>> GetFavFood()
         {
-          if (_context.FavFood == null)
+          if (_context.FavFoods == null)
           {
               return NotFound();
           }
-            return await _context.FavFood.ToListAsync();
+            return await _context.FavFoods.ToListAsync();
         }
 
         // GET: api/FavFoods/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<FavFood>> GetFavFood(int id)
+        public async Task<ActionResult<IEnumerable<FavFoods>>> GetFavFoods(int? id)
         {
-          if (_context.FavFood == null)
-          {
-              return NotFound();
-          }
-            var favFood = await _context.FavFood.FindAsync(id);
-
-            if (favFood == null)
+            if (id == null || id == 0)
             {
-                return NotFound();
+                return await _context.FavFoods.Take(5).ToListAsync();
             }
-
-            return favFood;
+            else
+            {
+                var FavFoods = await _context.FavFoods.FindAsync(id);
+                if (FavFoods == null)
+                {
+                    return NotFound();
+                }
+                return new List<FavFoods> { FavFoods };
+            }
         }
 
         // PUT: api/FavFoods/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutFavFood(int id, FavFood favFood)
+        public async Task<IActionResult> PutFavFood(int id, FavFoods FavFoods)
         {
-            if (id != favFood.Id)
+            if (id != FavFoods.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(favFood).State = EntityState.Modified;
+            _context.Entry(FavFoods).State = EntityState.Modified;
 
             try
             {
@@ -84,33 +85,33 @@ namespace FinalProject.Controllers
         // POST: api/FavFoods
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<FavFood>> PostFavFood(FavFood favFood)
+        public async Task<ActionResult<FavFoods>> PostFavFood(FavFoods FavFoods)
         {
-          if (_context.FavFood == null)
+          if (_context.FavFoods == null)
           {
-              return Problem("Entity set 'AppDbContext.FavFood'  is null.");
+              return Problem("Entity set 'AppDbContext.FavFoods'  is null.");
           }
-            _context.FavFood.Add(favFood);
+            _context.FavFoods.Add(FavFoods);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetFavFood", new { id = favFood.Id }, favFood);
+            return CreatedAtAction("GetFavFood", new { id = FavFoods.Id }, FavFoods);
         }
 
         // DELETE: api/FavFoods/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteFavFood(int id)
         {
-            if (_context.FavFood == null)
+            if (_context.FavFoods == null)
             {
                 return NotFound();
             }
-            var favFood = await _context.FavFood.FindAsync(id);
-            if (favFood == null)
+            var FavFoods = await _context.FavFoods.FindAsync(id);
+            if (FavFoods == null)
             {
                 return NotFound();
             }
 
-            _context.FavFood.Remove(favFood);
+            _context.FavFoods.Remove(FavFoods);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -118,7 +119,7 @@ namespace FinalProject.Controllers
 
         private bool FavFoodExists(int id)
         {
-            return (_context.FavFood?.Any(e => e.Id == id)).GetValueOrDefault();
+            return (_context.FavFoods?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }
