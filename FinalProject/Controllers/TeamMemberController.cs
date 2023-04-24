@@ -86,7 +86,7 @@ namespace FinalProject.Controllers
                 return NotFound();
             }
 
-            _context.TeamMembers.Remove(teamMember);
+            _context.TeamMembers.Remove(id);
             await _context.SaveChangesAsync();
 
             return NoContent();
