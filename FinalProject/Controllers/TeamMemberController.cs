@@ -76,7 +76,7 @@ namespace FinalProject.Controllers
             return NoContent();
         }
 
-        // DELETE: api/TeamMember/5
+        // DELETE: api/TeamMembers/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTeamMember(int id)
         {
